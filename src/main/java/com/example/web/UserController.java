@@ -1,8 +1,19 @@
-package com.example.demo;
+package com.example.web;
 
+import com.example.demo.User;
+import com.example.proxy.GlobalExceptionHandler;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageBuilder;
+import org.springframework.amqp.core.MessageDeliveryMode;
+import org.springframework.amqp.core.MessageProperties;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.support.converter.AbstractJavaTypeMapper;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -12,12 +23,28 @@ import java.util.*;
 public class UserController {
     static Map<Long, User> users = Collections.synchronizedMap(new HashMap<Long, User>());
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
+
+    @Autowired
+    GlobalExceptionHandler global;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
     @ApiOperation(value="获取用户列表", notes="")
     @RequestMapping(value="/", method=RequestMethod.GET)
-    public List<User> getUserList() {
+    public List<User> getUserList() throws Exception{
+        //test test=new test();
+        //test.test2();
         // 处理"/users/"的GET请求，用来获取用户列表
         // 还可以通过@RequestParam从页面中传递参数来进行查询条件或者翻页信息的传递
         List<User> r = new ArrayList<User>(users.values());
+        Message message=MessageBuilder.withBody(objectMapper.writeValueAsBytes(r.get(0))).setDeliveryMode(MessageDeliveryMode.PERSISTENT).build();
+        message.getMessageProperties().setHeader(AbstractJavaTypeMapper.DEFAULT_CONTENT_CLASSID_FIELD_NAME, MessageProperties.CONTENT_TYPE_JSON);
+        rabbitTemplate.setMessageConverter(new Jackson2JsonMessageConverter());
+        rabbitTemplate.convertAndSend("direct",message);
         return r;
     }
 

@@ -24,13 +24,7 @@ public class testHandle implements InvocationHandler {
 
     }
 
-    @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        before();
-        Object result = method.invoke(target, args);
-        after();
-        return result;
-    }
+
 
     private void before() {
         LOGGER.info("handle before");
@@ -44,5 +38,13 @@ public class testHandle implements InvocationHandler {
     public  static  void main(String[] args) throws Exception{
       home test =  (home) Proxy.newProxyInstance(testHandle.class.getClassLoader(),new Class[]{home.class}, new testHandle(test.class));
       test.test();
+    }
+
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        before();
+        Object result = method.invoke(target, args);
+        after();
+        return result;
     }
 }
