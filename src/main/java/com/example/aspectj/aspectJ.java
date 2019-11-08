@@ -20,7 +20,7 @@ public class aspectJ {
     private Logger logger = LoggerFactory.getLogger(aspectJ.class);
 
     @Pointcut("execution(public * com.example.web..*.*(..))")
-    public void logPrint(){}
+    public void logPrint(){System.out.println(12);}
 
     @Before("logPrint()")
     public void doBefore(JoinPoint joinPoint) throws Throwable {
