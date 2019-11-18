@@ -1,10 +1,12 @@
 package com.example.dataStructure;
 
+import java.lang.reflect.Constructor;
+
 public class ArrayUtil {
     private String[] array;
     private volatile int length = 0;
 
-    public ArrayUtil(int max) {
+    public ArrayUtil(Integer max) {
         array = new String[max];
     }
 
@@ -47,7 +49,11 @@ public class ArrayUtil {
 
     public static void main(String[] args){
         try {
-            ArrayUtil arrayUtil = new ArrayUtil(2);
+            //ArrayUtil arrayUtil = new ArrayUtil(2);
+           Class clazz= Class.forName("com.example.dataStructure.ArrayUtil");
+            Constructor cst = clazz.getConstructor(Integer.class);
+            ArrayUtil arrayUtil = (ArrayUtil)cst.newInstance(2);
+
             arrayUtil.insert("hello");
             arrayUtil.insert("word");
             arrayUtil.delete("hello");

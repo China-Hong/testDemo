@@ -1,7 +1,10 @@
 package com.example.web;
 
+import com.alipay.api.AlipayApiException;
+import com.alipay.api.response.AlipayTradePagePayResponse;
 import com.example.demo.User;
 import com.example.proxy.GlobalExceptionHandler;
+import com.example.service.payService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -16,6 +19,8 @@ import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.*;
 
 @RestController
@@ -26,6 +31,8 @@ public class UserController {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private payService payService;
 
     @Autowired
     GlobalExceptionHandler global;
@@ -88,6 +95,26 @@ public class UserController {
     public String deleteUser(@PathVariable Long id) {
         // 处理"/users/{id}"的DELETE请求，用来删除User
         users.remove(id);
+        return "success";
+    }
+
+    @ApiOperation(value="调用支付接口", notes="支付页面查看")
+    @ApiImplicitParam(name = "id", value = "用户ID", required = true, dataType = "Long")
+    @RequestMapping(value="/pay",method=RequestMethod.POST)
+    public String payTest(HttpServletResponse httpResponse) {
+        // 处理"/users/{id}"的DELETE请求，用来删除User
+        try {
+            AlipayTradePagePayResponse response =payService.payItem();
+        String form= response.getBody();
+        httpResponse.setContentType("text/html;charset=" + "GBK");
+        httpResponse.getWriter().write(form);//直接将完整的表单html输出到页面
+        httpResponse.getWriter().flush();
+        httpResponse.getWriter().close();
+        } catch (AlipayApiException e) {
+            e.printStackTrace();
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
         return "success";
     }
 }
