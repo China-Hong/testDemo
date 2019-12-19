@@ -2,6 +2,8 @@ package com.example.web;
 
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.response.AlipayTradePagePayResponse;
+import com.example.dao.PersonESRepository;
+import com.example.demo.Person;
 import com.example.demo.User;
 import com.example.proxy.GlobalExceptionHandler;
 import com.example.service.payService;
@@ -39,6 +41,11 @@ public class UserController {
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
+
+    @Autowired
+    private PersonESRepository personESRepository;
+
+    final String names = "";
 
     @ApiOperation(value="获取用户列表", notes="")
     @RequestMapping(value="/", method=RequestMethod.GET)
@@ -116,5 +123,15 @@ public class UserController {
             e.printStackTrace();
         }
         return "success";
+    }
+
+    @RequestMapping(value="/person", method=RequestMethod.GET)
+    public List<Person> getPersonList(){
+
+        Iterable<Person> userES = personESRepository.findAll();
+        userES.forEach(userES1 -> {
+            System.out.print(userES1.toString() + "\n");
+        });
+        return null;
     }
 }
