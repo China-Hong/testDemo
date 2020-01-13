@@ -55,15 +55,14 @@ public class UserController {
         // 处理"/users/"的GET请求，用来获取用户列表
         // 还可以通过@RequestParam从页面中传递参数来进行查询条件或者翻页信息的传递
         List<User> rs = new ArrayList<User>(users.values());
+        //Message message=MessageBuilder.withBody(objectMapper.writeValueAsBytes(rs.get(0))).setDeliveryMode(MessageDeliveryMode.PERSISTENT).build();
         Message message=MessageBuilder.withBody(objectMapper.writeValueAsBytes(rs.get(0))).setDeliveryMode(MessageDeliveryMode.PERSISTENT).build();
-        List<User> rr = new ArrayList<User>(users.values());
-        Message message=MessageBuilder.withBody(objectMapper.writeValueAsBytes(rr.get(0))).setDeliveryMode(MessageDeliveryMode.PERSISTENT).build();
         message.getMessageProperties().setHeader(AbstractJavaTypeMapper.DEFAULT_CONTENT_CLASSID_FIELD_NAME, MessageProperties.CONTENT_TYPE_JSON);
         rabbitTemplate.setMessageConverter(new Jackson2JsonMessageConverter());
         rabbitTemplate.convertAndSend("direct",message);
         System.out.println("");
         return rs;
-        return rr;
+        //return rr;
     }
 
     @ApiOperation(value="创建用户", notes="根据User对象创建用户")
