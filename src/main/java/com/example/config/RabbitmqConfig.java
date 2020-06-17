@@ -11,10 +11,9 @@ import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.amqp.SimpleRabbitListenerContainerFactoryConfigurer;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 
-@Configuration
+//@Configuration
 public class RabbitmqConfig {
     private static final Logger log= LoggerFactory.getLogger(RabbitmqConfig.class);
 

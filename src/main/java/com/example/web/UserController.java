@@ -60,6 +60,7 @@ public class UserController {
         message.getMessageProperties().setHeader(AbstractJavaTypeMapper.DEFAULT_CONTENT_CLASSID_FIELD_NAME, MessageProperties.CONTENT_TYPE_JSON);
         rabbitTemplate.setMessageConverter(new Jackson2JsonMessageConverter());
         rabbitTemplate.convertAndSend("direct",message);
+        String json = "{\"dateAttr_all\":[\"日本\",\"北京\",\"广东\",\"上海\",\"江苏\",\"深圳\",\"浙江\",\"湖北\",\"四川\",\"山东\",\"福建\",\"河南\",\"河北\",\"特区\",\"武汉\",\"香港\",\"朝阳区\"],\"countAttr_all\":[\"3077\",\"2270\",\"1631\",\"1402\",\"1015\",\"944\",\"860\",\"631\",\"615\",\"597\",\"506\",\"500\",\"436\",\"421\",\"411\",\"385\",\"363\"],\"mapMassage\":\"<thead><tr><th>地域</th><th>数量</th><tr></thead><tbody><tr><td>日本</td><td>3077</td></tr><tr><td>北京</td><td>2270</td></tr><tr><td>广东</td><td>1631</td></tr><tr><td>上海</td><td>1402</td></tr><tr><td>江苏</td><td>1015</td></tr><tr><td>深圳</td><td>944</td></tr><tr><td>浙江</td><td>860</td></tr><tr><td>湖北</td><td>631</td></tr><tr><td>四川</td><td>615</td></tr><tr><td>山东</td><td>597</td></tr></tbody>\"}";
         System.out.println("");
         return rs;
         //return rr;
